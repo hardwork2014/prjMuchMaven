@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="District">
+    <resultMap id="districtMap" type="District">
+        <result property="districtNo" column="districtNo"/>
+        <result property="districtName" column="districtName"/>
+        <result property="districtSpelling" column="districtSpelling"/>
+        <collection property="plateList" resultMap="plateMap"/>
+    </resultMap>
+    <resultMap id="plateMap" type="Plate">
+        <result property="districtNo" column="districtNo"/>
+        <result property="plateName" column="plateName"/>
+        <result property="plateSpelling" column="plateSpelling"/>
+    </resultMap>
+
+    <select id="queryAllDistrict" resultMap="districtMap">
+        select * from T_DyOnline_District d
+        inner join T_DyOnline_Plate p on d.districtNo = p.districtNo
+        where d.status = 1 order by d.sort;
+    </select>
+
+    <select id="querySearchMap" resultType="java.util.HashMap" useCache="true">
+        select districtSpelling as spelling ,districtName as name,'区域' as type,districtNo as id  from T_DyOnline_District where status = 1
+        union all
+        select plateSpelling as spelling ,plateName as name,'板块' as type,id  from T_DyOnline_Plate
+    </select>
+
+</mapper>
